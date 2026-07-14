@@ -36,6 +36,13 @@
             z-index: -1;
         }
 
+        /* Auf Mobilgeräten das Overlay viel transparenter machen, damit der Gorilla gut sichtbar ist */
+        @media (max-width: 600px) {
+            .bg-overlay {
+                background-color: rgba(255, 255, 255, 0.15);
+            }
+        }
+
         h1 {
             margin-bottom: 40px;
             color: #1a1a1a;
