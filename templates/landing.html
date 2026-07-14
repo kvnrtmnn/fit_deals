@@ -14,33 +14,26 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
+        }
+
+        /* Hintergrundbild als eigenes Element – funktioniert zuverlässig auf Mobile */
+        .bg-image {
+            position: fixed;
+            inset: 0;
             background-image: url("{{ url_for('static', filename='dealfinder_logo.png') }}");
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            background-attachment: fixed;
-            position: relative;
+            z-index: -2;
         }
 
-        /* Fix für Mobile: background-attachment: fixed funktioniert nicht auf iOS/Android */
-        @media (max-width: 768px) {
-            body {
-                background-attachment: scroll;
-                background-size: cover;
-            }
-        }
-
-        /* Ein Overlay, damit der Text lesbar bleibt (weißer Schleier, 85% deckend) */
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.60);
+        /* Weißes Overlay */
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.55);
             z-index: -1;
-            /* Hinter dem Inhalt, aber vor dem Bild */
         }
 
         h1 {
@@ -156,7 +149,11 @@
 
 <body>
 
-    <h1>🏋️ Dein GYM WEAR DEAL-Finder</h1>
+    <!-- Hintergrundbild + Overlay als eigene Elemente (funktioniert auf Mobile) -->
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+
+    <h1>FITNESS FASHION DEALS</h1>
 
     <div class="brand-container">
         <a href="/deals?store=smilodox" class="brand-card smilodox">
