@@ -4,27 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deal Finder - Wähle deinen Shop</title>
+    <title>GYM WEAR DEALS – Dein Fitness Fashion Finder</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* HINTERGRUND BILD */
-            /* Wir nutzen url_for, um den Pfad zum static-Ordner zu holen */
             background-image: url("{{ url_for('static', filename='dealfinder_logo.png') }}");
             background-size: cover;
-            /* Bild deckt alles ab */
             background-position: center;
-            /* Bild zentriert */
             background-repeat: no-repeat;
             background-attachment: fixed;
             position: relative;
-            /* Wichtig für das Overlay */
+        }
+
+        /* Fix für Mobile: background-attachment: fixed funktioniert nicht auf iOS/Android */
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll;
+                background-size: cover;
+            }
         }
 
         /* Ein Overlay, damit der Text lesbar bleibt (weißer Schleier, 85% deckend) */
@@ -44,7 +47,12 @@
             margin-bottom: 40px;
             color: #1a1a1a;
             font-size: 2.5rem;
+            text-align: center;
             text-shadow: 0 2px 5px rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
         }
 
         .brand-container {
@@ -129,7 +137,7 @@
 
 <body>
 
-    <h1>Wähle deinen Shop</h1>
+    <h1>🏋️ Dein GYM WEAR DEAL-Finder</h1>
 
     <div class="brand-container">
         <a href="/deals?store=smilodox" class="brand-card smilodox">
