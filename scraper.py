@@ -14,6 +14,21 @@ def extract_size_and_color(variant):
     options = [variant.get('option1'), variant.get('option2'), variant.get('option3')]
     options = [o for o in options if o]
     
+    # Mapping: ausgeschriebene Größen (z.B. Gymshark) → Abkürzung
+    SIZE_MAP = {
+        "extra extra extra extra large": "4XL",
+        "extra extra extra large": "3XL",
+        "extra extra small": "XXS",
+        "extra extra large": "XXL",
+        "extra small": "XS",
+        "extra large": "XL",
+        "small": "S",
+        "medium": "M",
+        "large": "L",
+        "one size": "One Size",
+        "default title": None,  # Produkte ohne echte Variante → ignorieren
+    }
+    
     # Erweiterte Liste bekannter Größen
     known_sizes = set(["XXS", "XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL", 
                        "34", "36", "38", "40", "42", "44", "46", "48", "One Size"])
@@ -23,15 +38,35 @@ def extract_size_and_color(variant):
     found_size = False
     
     for opt in options:
-        # Check ob Option eine Größe ist (ignoriere Groß/Kleinschreibung)
+        opt_lower = opt.strip().lower()
+        
+        # 1. Prüfe Langform-Mapping
+        if not found_size and opt_lower in SIZE_MAP:
+            mapped = SIZE_MAP[opt_lower]
+            if mapped is not None:
+                size = mapped
+                found_size = True
+            # None-Mapping (z.B. "Default Title") → als style_info ignorieren
+            continue
+        
+        # 2. Prüfe Kurzform (XS, M, XL, ...)
         if not found_size and (opt in known_sizes or opt.upper() in known_sizes):
+            size = opt.upper() if opt.upper() in known_sizes else opt
+            found_size = True
+        
+        # 3. Schuhgrößen (UK/EU/US-Format) → als Größe übernehmen
+        elif not found_size and ("UK" in opt or "EU" in opt):
             size = opt
             found_size = True
         else:
             style_info.append(opt)
             
     style_name = " / ".join(style_info) if style_info else "Standard"
+    # Fallback: Accessoires o.ä. ohne erkennbare Größe → "One Size"
+    if size == "Unbekannt":
+        size = "One Size"
     return size, style_name
+
 
 def fetch_deals(url, shop_name, gender_keywords=None):
     headers = {'User-Agent': 'Mozilla/5.0'}
