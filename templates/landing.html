@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deal Finder - Wähle deinen Shop</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* HINTERGRUND BILD */
+            /* Wir nutzen url_for, um den Pfad zum static-Ordner zu holen */
+            background-image: url("{{ url_for('static', filename='dealfinder_logo.png') }}");
+            background-size: cover;      /* Bild deckt alles ab */
+            background-position: center; /* Bild zentriert */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;          /* Wichtig für das Overlay */
+        }
+
+        /* Ein Overlay, damit der Text lesbar bleibt (weißer Schleier, 85% deckend) */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.60); 
+            z-index: -1; /* Hinter dem Inhalt, aber vor dem Bild */
+        }
+
+        h1 { 
+            margin-bottom: 40px; 
+            color: #1a1a1a; 
+            font-size: 2.5rem;
+            text-shadow: 0 2px 5px rgba(255,255,255,0.5);
+        }
+        
+        .brand-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1000px;
+            z-index: 1; /* Sicherstellen, dass Buttons klickbar sind */
+        }
+
+        .brand-card {
+            background: white;
+            border-radius: 15px;
+            width: 280px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            overflow: hidden;
+            padding: 20px;
+            box-sizing: border-box;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .brand-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .brand-card img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* --- HINTERGRÜNDE --- */
+        .brand-card.oace { background-color: #000; }
+        .brand-card.smilodox { background-color: #000; }
+        .brand-card.teveo { background-color: #000; }
+        .brand-card.gymshark { background-color: #000; }
+        .brand-card.oceansapart { background-color: #fff; border: 2px solid #eee; }
+        
+        .all-link {
+            margin-top: 50px;
+            color: #333;
+            text-decoration: none;
+            font-size: 1rem;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .all-link:hover {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Wähle deinen Shop</h1>
+
+    <div class="brand-container">
+        <a href="/deals?store=smilodox" class="brand-card smilodox">
+            <img src="https://smilodox.com/cdn/shop/files/apple-touch-icon_256x256.png?v=1613698633" alt="Smilodox">
+        </a>
+
+        <a href="/deals?store=more" class="brand-card">
+            <img src="//morenutrition.de/cdn/shop/files/226x112_More_Logo.png?v=1756107233&width=600" alt="More Nutrition">
+        </a>
+
+        <a href="/deals?store=oace" class="brand-card oace">
+            <img src="//oace.de/cdn/shop/files/OACE_Logo_White_400x120px.png?v=1716295486&width=400" alt="OACE">
+        </a>
+
+        <a href="/deals?store=teveo" class="brand-card teveo">
+            <img src="https://teveo.com/cdn/shop/files/TEVEO_Favicon.png?v=1751380044&width=180" alt="Teveo">
+        </a>
+
+        <a href="/deals?store=oceansapart" class="brand-card oceansapart">
+            <img src="https://www.oceansapart.com/cdn/shop/files/Favicon.png?crop=center&height=180&v=1703860249&width=180" alt="Oceans Apart">
+        </a>
+
+        <a href="/deals?store=gymshark" class="brand-card gymshark">
+            <img src="https://us.checkout.gymshark.com/cdn/shop/files/icon-200_767692d6-7327-4714-8ce6-69826dd054a5_180x180.png?v=1613146345" alt="Gymshark">
+        </a>
+    </div>
+
+    <a href="/deals?store=all" class="all-link">Alle Angebote anzeigen</a>
+
+</body>
+</html>

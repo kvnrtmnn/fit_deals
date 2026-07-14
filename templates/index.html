@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deal Ergebnisse</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f8; margin: 0; padding: 20px; color: #333; }
+        
+        .top-bar {
+            background: white; padding: 20px; border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px;
+            display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; align-items: flex-start;
+        }
+
+        .header-info h1 { margin: 5px 0 0 0; font-size: 1.5rem; color: #111; }
+        .back-link { text-decoration: none; color: #666; font-size: 0.9em; display: inline-block; margin-bottom: 10px;}
+        .back-link:hover { color: #000; }
+
+        /* NEU: Logo Header Styles */
+        .shop-header-logo {
+            display: inline-block;
+            height: 50px;
+            padding: 5px 15px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            width: fit-content;
+        }
+        .shop-header-logo img {
+            max-height: 100%;
+            width: auto;
+            display: block;
+        }
+        /* Schwarzer Hintergrund für OACE & Smilodox */
+        .bg-black { background-color: #000; }
+
+
+        .filter-form { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        .filter-label { font-size: 0.85em; font-weight: bold; text-transform: uppercase; color: #555; }
+        select, input[type="number"] { padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.95em; }
+
+        .sizes-filter { display: flex; gap: 5px; flex-wrap: wrap; max-width: 300px; }
+        .size-checkbox { display: none; }
+        
+        .size-checkbox + label {
+            cursor: pointer; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px;
+            font-size: 0.8em; background: #fff; user-select: none; transition: all 0.2s;
+        }
+        
+        .size-checkbox:checked + label {
+            background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; font-weight: bold;
+        }
+
+        .apply-btn { padding: 10px 20px; background: #1a1a1a; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .apply-btn:hover { background: #333; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; max-width: 1600px; margin: 0 auto; }
+        .card {
+            background: white; border-radius: 12px; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column;
+            border: 1px solid #eee; transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-3px); }
+        .image-container {
+            height: 250px; display: flex; align-items: center; justify-content: center;
+            position: relative; padding: 10px;
+        }
+        .image-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .discount-badge {
+            position: absolute; top: 10px; right: 10px; background: #ff3b30; color: white;
+            padding: 4px 8px; border-radius: 12px; font-weight: bold; font-size: 0.8em;
+        }
+        .content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .shop-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; color: white; width: fit-content; }
+        .oace { background-color: #000; } .smilodox { background-color: #d32f2f; } .more { background-color: #1976d2; }
+        .teveo { background-color: #333; } .gymshark { background-color: #00a9e0; } .oceansapart { background-color: #e91e8c; }
+        h3 { margin: 0 0 5px 0; font-size: 1rem; color: #222; }
+        .style-name { color: #666; font-size: 0.85em; margin-bottom: 8px; }
+        .prices { margin-bottom: 10px; display: flex; align-items: baseline; gap: 8px; }
+        .new-price { color: #d32f2f; font-weight: bold; font-size: 1.1em; }
+        .old-price { text-decoration: line-through; color: #999; font-size: 0.8em; }
+        .size-list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; margin-bottom: 10px; }
+        .size-tag { background: #f5f5f5; color: #444; border: 1px solid #e0e0e0; padding: 2px 6px; border-radius: 3px; font-size: 0.75em; }
+        .size-tag.match { background: #e8f5e9; border-color: #2e7d32; color: #2e7d32; font-weight: bold;}
+
+        .btn { display: block; width: 100%; text-align: center; background: #1a1a1a; color: white; text-decoration: none; padding: 10px 0; border-radius: 6px; font-weight: 600; font-size: 0.9em; }
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 40px; }
+        .page-btn { padding: 8px 12px; background: white; border: 1px solid #ddd; text-decoration: none; color: #333; border-radius: 6px; }
+        .page-btn.disabled { opacity: 0.5; pointer-events: none; }
+        .page-info { padding: 8px; font-weight: bold; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <div class="header-info">
+            <a href="/" class="back-link">← Zur Startseite</a>
+            
+            {% if current_store == 'smilodox' %}
+                <div class="shop-header-logo bg-black">
+                    <img src="https://smilodox.com/cdn/shop/files/apple-touch-icon_96x96.png?v=1613698633" alt="Smilodox">
+                </div>
+            {% elif current_store == 'oace' %}
+                <div class="shop-header-logo bg-black">
+                    <img src="https://oace.de/cdn/shop/files/OACE_Logo_White_400x120px.png?v=1716295486&width=400" alt="OACE">
+                </div>
+            {% elif current_store == 'more' %}
+                <div class="shop-header-logo">
+                    <img src="https://morenutrition.de/cdn/shop/files/226x112_More_Logo.png?v=1756107233&width=600" alt="More Nutrition">
+                </div>
+            {% elif current_store == 'teveo' %}
+                <div class="shop-header-logo bg-black">
+                    <img src="https://teveo.com/cdn/shop/files/TEVEO_Favicon.png?v=1751380044&width=180" alt="Teveo">
+                </div>
+            {% elif current_store == 'oceansapart' %}
+                <div class="shop-header-logo" style="background:#fff; border:1px solid #eee;">
+                    <img src="https://www.oceansapart.com/cdn/shop/files/Favicon.png?crop=center&height=180&v=1703860249&width=180" alt="Oceans Apart">
+                </div>
+            {% elif current_store == 'gymshark' %}
+                <div class="shop-header-logo bg-black">
+                    <img src="https://us.checkout.gymshark.com/cdn/shop/files/icon-200_767692d6-7327-4714-8ce6-69826dd054a5_180x180.png?v=1613146345" alt="Gymshark">
+                </div>
+            {% endif %}
+
+            <h1>{{ total_deals }} Angebote</h1>
+            <p style="font-size: 0.8em; margin-top: 5px;"><a href="/refresh?store={{ current_store }}">🔄 Aktualisieren</a></p>
+        </div>
+
+        <form action="/deals" method="GET" class="filter-form">
+            <input type="hidden" name="store" value="{{ current_store }}">
+
+            <div class="filter-group">
+                <label class="filter-label">Sortierung</label>
+                <select name="sort">
+                    <option value="discount_desc" {% if current_sort == 'discount_desc' %}selected{% endif %}>Bester Rabatt</option>
+                    <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Preis aufsteigend</option>
+                    <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Preis absteigend</option>
+                    <option value="name_asc" {% if current_sort == 'name_asc' %}selected{% endif %}>Name (A-Z)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Min. Rabatt (%)</label>
+                <input type="number" name="min_discount" value="{{ current_min_discount }}" min="0" max="90" step="5" style="width: 60px;">
+            </div>
+
+            <div class="filter-group">
+                <label class="filter-label">Deine Größe(n)</label>
+                <div class="sizes-filter">
+                    {% set sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'] %}
+                    {% for s in sizes %}
+                        <input type="checkbox" id="size-{{s}}" name="filter_size" value="{{s}}" class="size-checkbox"
+                        {% if s in current_desired_sizes %}checked{% endif %}>
+                        <label for="size-{{s}}">{{s}}</label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <button type="submit" class="apply-btn">Anwenden</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="grid">
+        {% for deal in deals %}
+        <div class="card">
+            <div class="image-container">
+                <span class="discount-badge">-{{ deal.discount }}%</span>
+                <img src="{{ deal.image }}" alt="{{ deal.title }}" loading="lazy">
+            </div>
+            <div class="content">
+                <span class="shop-badge {{ deal.shop|lower|replace(' ', '') }}">{{ deal.shop }}</span>
+                <h3>{{ deal.title }}</h3>
+                <span class="style-name">{{ deal.style }}</span>
+
+                <div class="prices">
+                    <span class="new-price">{{ "%.2f"|format(deal.price) }}€</span>
+                    <span class="old-price">{{ "%.2f"|format(deal.old_price) }}€</span>
+                </div>
+                
+                <div class="size-list">
+                    {% for size in deal.sizes %}
+                        <span class="size-tag {% if size in current_desired_sizes %}match{% endif %}">{{ size }}</span>
+                    {% endfor %}
+                </div>
+
+                <a href="{{ deal.url }}" target="_blank" class="btn">Zum Deal</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% if total_pages > 1 %}
+    <div class="pagination">
+        {% set base_query = 'store=' + current_store + '&min_discount=' + current_min_discount|string + '&sort=' + current_sort %}
+        {% for s in current_desired_sizes %}
+            {% set base_query = base_query + '&filter_size=' + s %}
+        {% endfor %}
+
+        {% if page > 1 %}
+            <a href="/deals?{{ base_query }}&page={{ page - 1 }}" class="page-btn">← Zurück</a>
+        {% else %}
+            <span class="page-btn disabled">← Zurück</span>
+        {% endif %}
+
+        <span class="page-info">Seite {{ page }} / {{ total_pages }}</span>
+
+        {% if page < total_pages %}
+            <a href="/deals?{{ base_query }}&page={{ page + 1 }}" class="page-btn">Weiter →</a>
+        {% else %}
+            <span class="page-btn disabled">Weiter →</span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+</body>
+</html>
